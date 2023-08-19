@@ -1,0 +1,19 @@
+{{define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+  {{template "header" .}}
+
+  <body data-bs-theme="dark">
+    {{block "content" .}}
+
+    {{ end }}
+
+    {{block "js" .}}
+
+    {{ end }}
+
+    {{template "footer" .}}
+  </body>
+</html>
+
+{{ end }}
