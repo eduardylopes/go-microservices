@@ -4,15 +4,17 @@
   {{template "header" .}}
 
   <body data-bs-theme="dark">
-    {{block "content" .}}
+    <div class="d-flex flex-column min-vh-100">
+      <div class="flex-fill">
+        {{block "content" .}}
+        {{ end }}
+      </div>
 
-    {{ end }}
+      {{template "footer" .}}
+    </div>
 
     {{block "js" .}}
-
     {{ end }}
-
-    {{template "footer" .}}
   </body>
 </html>
 

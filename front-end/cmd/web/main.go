@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const webPort = "8080"
+const webPort = "8090"
 
 func main() {
 	mux := http.NewServeMux()
@@ -25,7 +25,6 @@ func main() {
 	if err := srv.ListenAndServe(); err != nil {
 		log.Panic(err)
 	}
-
 }
 
 func render(w http.ResponseWriter, t string) {
@@ -38,7 +37,6 @@ func render(w http.ResponseWriter, t string) {
 
 	var templateSlice []string
 	templateSlice = append(templateSlice, fmt.Sprintf("./cmd/web/templates/%s", t))
-
 	templateSlice = append(templateSlice, partials...)
 
 	tmpl, err := template.ParseFiles(templateSlice...)
