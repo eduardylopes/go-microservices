@@ -81,7 +81,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 
 	payload := JSONResponse{
 		Error:   false,
-		Message: "Authenticated!",
+		Message: "authenticated",
 		Data:    JSONFromService.Data,
 	}
 
