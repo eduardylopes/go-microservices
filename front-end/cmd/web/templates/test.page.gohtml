@@ -8,15 +8,15 @@
       <hr />
       <a
         id="brokerBtn"
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-success"
         href="javascript:void(0)"
         >Test Broker</a
       >
       <h4 class="mt-5">Output</h4>
       <div
         id="output"
-        class="p-2 border border-dark-subtle max-height-div overflow-auto"
-        style="max-height: 300px; overflow-y: auto"
+        class="p-4 border border-dark-subtle max-height-div overflow-auto"
+        style="height: 200px; overflow-y: auto"
       >
         <span class="text-muted">Output shows here...</span>
       </div>
@@ -25,7 +25,10 @@
   <div class="row">
     <div class="col">
       <h4 class="mt-5">Sent</h4>
-      <div class="mt-1 p-2 border border-dark-subtle">
+      <div
+        class="mt-1 p-4 border border-dark-subtle"
+        style="height: 200px; overflow-y: auto"
+      >
         <pre
           id="payload"
         ><span class="text-muted">Nothing sent yet...</span></pre>
@@ -33,7 +36,10 @@
     </div>
     <div class="col">
       <h4 class="mt-5">Received</h4>
-      <div class="mt-1 p-2 border border-dark-subtle">
+      <div
+        class="mt-1 p-4 border border-dark-subtle"
+        style="height: 200px; overflow-y: auto"
+      >
         <pre
           id="received"
         ><span class="text-muted">Nothing received yet...</span></pre>
