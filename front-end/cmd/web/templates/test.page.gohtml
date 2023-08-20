@@ -78,12 +78,12 @@
           console.log(data.message);
         } else {
           output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
-          output.scrollTop = output.scrollHeight;
         }
       })
       .catch(error => {
         output.innerHTML += `<br><br>Error: ${error}`;
-      });
+      })
+      .finally(() => (output.scrollTop = output.scrollHeight));
   });
 
   authBrokerBtn.addEventListener('click', () => {
@@ -114,12 +114,12 @@
           output.innerHTML += `<br><strong>Error:</strong>: ${data.message}`;
         } else {
           output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
-          output.scrollTop = output.scrollHeight;
         }
       })
       .catch(error => {
         output.innerHTML += `<br><br>Error: ${error}`;
-      });
+      })
+      .finally(() => (output.scrollTop = output.scrollHeight));
   });
 </script>
 {{ end }}
