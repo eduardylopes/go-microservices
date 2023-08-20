@@ -6,8 +6,18 @@
     <div class="col">
       <h1 class="mt-5">Test microservices</h1>
       <hr />
+      <a
+        id="brokerBtn"
+        class="btn btn-outline-secondary"
+        href="javascript:void(0)"
+        >Test Broker</a
+      >
       <h4 class="mt-5">Output</h4>
-      <div id="output" class="p-2 border border-dark-subtle">
+      <div
+        id="output"
+        class="p-2 border border-dark-subtle max-height-div overflow-auto"
+        style="max-height: 300px; overflow-y: auto"
+      >
         <span class="text-muted">Output shows here...</span>
       </div>
     </div>
@@ -34,5 +44,33 @@
 {{ end }}
 
 {{define "js"}}
-<script></script>
+<script>
+  let brokerBtn = document.getElementById('brokerBtn');
+  let output = document.getElementById('output');
+  let payload = document.getElementById('payload');
+  let received = document.getElementById('received');
+
+  brokerBtn.addEventListener('click', () => {
+    const body = {
+      method: 'POST',
+    };
+
+    fetch('http:\/\/localhost:8080', body)
+      .then(response => response.json())
+      .then(data => {
+        payload.innerHTML = 'empty post request';
+        received.innerHTML = JSON.stringify(data, null, 2);
+
+        if (data.error) {
+          console.log(data.message);
+        } else {
+          output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+          output.scrollTop = output.scrollHeight;
+        }
+      })
+      .catch(error => {
+        output.innerHTML += `<br><br>Error: ${error}`;
+      });
+  });
+</script>
 {{ end }}
