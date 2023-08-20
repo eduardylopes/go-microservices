@@ -21,7 +21,7 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users sslmode=disabled timezone=UTC connect_timeout=5"
+      DSN: "host=postgres port=5432 user=postgres password=password dbname=users timezone=UTC connect_timeout=5"
 
   postgres:
     image: 'postgres:14.2'
