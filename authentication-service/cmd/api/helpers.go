@@ -63,6 +63,8 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status int) error
 
 	if status == 0 {
 		statusCode = http.StatusBadRequest
+	} else {
+		statusCode = status
 	}
 
 	payload := JSONResponse{
