@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 )
 
@@ -14,7 +15,6 @@ type JSONResponse struct {
 
 func (app *Config) readJSON(w http.ResponseWriter, r *http.Request, data any) error {
 	maxBytes := 1048576 // 1MB
-
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
 
 	dec := json.NewDecoder(r.Body)
@@ -22,8 +22,8 @@ func (app *Config) readJSON(w http.ResponseWriter, r *http.Request, data any) er
 		return err
 	}
 
-	if err := dec.Decode(&struct{}{}); err != nil {
-		return errors.New("body must have only a single JSON value")
+	if err := dec.Decode(&struct{}{}); err != io.EOF {
+		return errors.New("body must have only a single json value")
 	}
 
 	return nil
@@ -62,6 +62,8 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status int) error
 
 	if status == 0 {
 		statusCode = http.StatusBadRequest
+	} else {
+		statusCode = status
 	}
 
 	payload := JSONResponse{
