@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const webPort = "8090"
+const webPort = "3000"
 
 func main() {
 	mux := http.NewServeMux()
