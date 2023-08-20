@@ -10,8 +10,14 @@
         id="brokerBtn"
         class="btn btn-outline-success"
         href="javascript:void(0)"
-        >Test Broker</a
-      >
+        >Test Broker
+      </a>
+      <a
+        id="authBrokerBtn"
+        class="btn btn-outline-success"
+        href="javascript:void(0)"
+        >Test Auth
+      </a>
       <h4 class="mt-5">Output</h4>
       <div
         id="output"
@@ -52,6 +58,7 @@
 {{define "js"}}
 <script>
   let brokerBtn = document.getElementById('brokerBtn');
+  let authBrokerBtn = document.getElementById('authBrokerBtn');
   let output = document.getElementById('output');
   let payload = document.getElementById('payload');
   let received = document.getElementById('received');
@@ -69,6 +76,42 @@
 
         if (data.error) {
           console.log(data.message);
+        } else {
+          output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+          output.scrollTop = output.scrollHeight;
+        }
+      })
+      .catch(error => {
+        output.innerHTML += `<br><br>Error: ${error}`;
+      });
+  });
+
+  authBrokerBtn.addEventListener('click', () => {
+    const payload = {
+      action: 'auth',
+      auth: {
+        email: 'admin@example.com',
+        password: 'verysecret',
+      },
+    };
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const body = {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: headers,
+    };
+
+    fetch('http:\/\/localhost:8080/handle', body)
+      .then(response => response.json())
+      .then(data => {
+        payload.innerHTML = JSON.stringify(data, null, 2);
+        received.innerHTML = JSON.stringify(data, null, 2);
+
+        if (data.error) {
+          output.innerHTML += `<br><strong>Error:</strong>: ${data.message}`;
         } else {
           output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
           output.scrollTop = output.scrollHeight;
