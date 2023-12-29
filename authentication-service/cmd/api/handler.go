@@ -53,7 +53,11 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	fullName := fmt.Sprintf("%s %s", user.FirstName, user.LastName)
 
-	app.logRequest(fullName, fmt.Sprintf("%s logged in", user.Email))
+	err = app.logRequest(fullName, fmt.Sprintf("%s logged in", user.Email))
+	if err != nil {
+		app.errorJSON(w, err, http.StatusBadRequest)
+		return
+	}
 
 	payload := JSONResponse{
 		Error:   false,
