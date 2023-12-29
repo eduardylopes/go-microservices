@@ -35,10 +35,8 @@ func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header
 		return err
 	}
 
-	if header != nil {
-		for key, value := range header {
-			w.Header()[key] = value
-		}
+	for key, value := range header {
+		w.Header()[key] = value
 	}
 
 	if len(header) > 0 {
