@@ -47,12 +47,15 @@ services:
       - ./db-data/postgres/:/var/lib/postgresql/data/
 
   mongo:
-    image: "mongo:4.2.16-bionic"
+    image: 'mongo'
     ports:
       - "27017:27017"
+    deploy:
+      mode: replicated
+      replicas: 1
     environment:
-      MONGO_INITIDB_DATABASE: logs
-      MONGO_INITIDB_ROOT_USERNAME: admin
-      MONGO_INITIDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: "logs"
+      MONGO_INITDB_ROOT_USERNAME: "admin"
+      MONGO_INITDB_ROOT_PASSWORD: "password"
     volumes:
       - ./db-data/mongo/:/data/db
