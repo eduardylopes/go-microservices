@@ -11,6 +11,14 @@ services:
       mode: replicated
       replicas: 1
 
+  logger-service:
+    build:
+      context: ./logger-service
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+
   authentication-service:
     build:
       context: ./authentication-service
@@ -24,7 +32,7 @@ services:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=users timezone=UTC connect_timeout=5"
 
   postgres:
-    image: 'postgres:14.2'
+    image: "postgres:14.2"
     ports:
       - "5432:5432"
     restart: always
@@ -37,3 +45,14 @@ services:
       POSTGRES_DB: users
     volumes:
       - ./db-data/postgres/:/var/lib/postgresql/data/
+
+  mongo:
+    image: "mongo:4.2.16-bionic"
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITIDB_DATABASE: logs
+      MONGO_INITIDB_ROOT_USERNAME: admin
+      MONGO_INITIDB_ROOT_PASSWORD: password
+    volumes:
+      - ./db-data/mongo/:/data/db
