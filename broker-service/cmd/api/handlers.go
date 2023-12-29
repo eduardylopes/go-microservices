@@ -102,22 +102,18 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 	logServiceURL := "http://logger-service/log"
 
 	req, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(JSONData))
-
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-
 	client := &http.Client{}
-
 	res, err := client.Do(req)
 	if err != nil {
 		app.errorJSON(w, err, http.StatusBadRequest)
 		return
 	}
-
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusAccepted {

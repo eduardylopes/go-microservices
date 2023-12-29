@@ -14,6 +14,7 @@ import (
 var client *mongo.Client
 
 func New(mongo *mongo.Client) Models {
+	client = mongo
 
 	return Models{
 		LogEntry: LogEntry{},
@@ -37,7 +38,7 @@ func (l *LogEntry) Insert(entry LogEntry) error {
 
 	_, err := collection.InsertOne(context.TODO(), LogEntry{
 		Name:      entry.Name,
-		ID:        entry.Data,
+		Data:      entry.Data,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
