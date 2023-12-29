@@ -1,7 +1,7 @@
 ## Todo
 
-- [x] Documentation how to install golang-migration lib
-- [x] Documentation how to build the project
-- [x] Documentation how to start the project
-- [x] Create a front-end docker container
-- [x] Create a flowchart to explain services iterations
+- [] Documentation how to install golang-migration lib
+- [] Documentation how to build the project
+- [] Documentation how to start the project
+- [] Create a front-end docker container
+- [] Create a flowchart to explain services iterations
