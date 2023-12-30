@@ -18,11 +18,11 @@
         href="javascript:void(0)"
         >Test Auth
       </a>
-      <a
-        id="logBtn"
-        class="btn btn-outline-success"
-        href="javascript:void(0)"
+      <a id="logBtn" class="btn btn-outline-success" href="javascript:void(0)"
         >Test Log
+      </a>
+      <a id="mailBtn" class="btn btn-outline-success" href="javascript:void(0)"
+        >Test Mail
       </a>
       <h4 class="mt-5">Output</h4>
       <div
@@ -41,9 +41,7 @@
         class="mt-1 p-4 border border-dark-subtle"
         style="height: 200px; overflow-y: auto; flex: 1"
       >
-        <pre
-          id="sent"
-        ><span class="text-muted">Nothing sent yet...</span></pre>
+        <pre id="sent"><span class="text-muted">Nothing sent yet...</span></pre>
       </div>
     </div>
     <div class="col">
@@ -66,6 +64,7 @@
   let brokerBtn = document.getElementById('brokerBtn');
   let authBrokerBtn = document.getElementById('authBrokerBtn');
   let logBtn = document.getElementById('logBtn');
+  let mailBtn = document.getElementById('mailBtn');
   let output = document.getElementById('output');
   let sent = document.getElementById('sent');
   let received = document.getElementById('received');
@@ -134,13 +133,52 @@
     const payload = {
       action: 'log',
       log: {
-        name: "event",
-        data: "Some kind of data"
-      }
-    }
+        name: 'event',
+        data: 'Some kind of data',
+      },
+    };
 
     const headers = new Headers();
-    headers.append("Content-Type", "application/json")
+    headers.append('Content-Type', 'application/json');
+
+    const body = {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers,
+    };
+
+    sent.innerHTML = JSON.stringify(payload, null, 2);
+
+    fetch('http://localhost:8080/handle', body)
+      .then(response => response.json())
+      .then(data => {
+        received.innerHTML = JSON.stringify(data, null, 2);
+
+        if (data.error) {
+          output.innerHTML += `<br><strong>Error:</strong>: ${data.message}`;
+        } else {
+          output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+        }
+      })
+      .catch(error => {
+        output.innerHTML += `<br><br>Error: ${error}`;
+      })
+      .finally(() => (output.scrollTop = output.scrollHeight));
+  });
+
+  mailBtn.addEventListener('click', () => {
+    const payload = {
+      action: 'mail',
+      mail: {
+        from: 'eduardylopes@gmail.com',
+        to: 'eduardylopes@gmail.com',
+        subject: 'Test subject',
+        message: 'Test message',
+      },
+    };
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
 
     const body = {
       method: 'POST',
