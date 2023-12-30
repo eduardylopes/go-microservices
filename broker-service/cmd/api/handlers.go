@@ -81,7 +81,9 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	if response.StatusCode == http.StatusUnauthorized {
 		app.errorJSON(w, errors.New("invalid credentials"), http.StatusUnauthorized)
 		return
-	} else if response.StatusCode != http.StatusAccepted {
+	}
+
+	if response.StatusCode != http.StatusAccepted {
 		app.errorJSON(w, errors.New("error calling auth service"), http.StatusBadRequest)
 		return
 	}
@@ -128,7 +130,7 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, err)
+		app.errorJSON(w, errors.New("error calling logger service"))
 		return
 	}
 
@@ -162,7 +164,7 @@ func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, errors.New("failed to send mail"))
+		app.errorJSON(w, errors.New("error calling mailer service"))
 		return
 	}
 
