@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -15,7 +16,6 @@ type JSONResponse struct {
 
 func (app *Config) readJSON(w http.ResponseWriter, r *http.Request, data any) error {
 	maxBytes := 1048576 // 1MB
-
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxBytes))
 
 	dec := json.NewDecoder(r.Body)
@@ -30,20 +30,14 @@ func (app *Config) readJSON(w http.ResponseWriter, r *http.Request, data any) er
 	return nil
 }
 
-func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header http.Header) error {
+func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, headers ...http.Header) error {
 	out, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	if header != nil {
-		for key, value := range header {
-			w.Header()[key] = value
-		}
-	}
-
-	if len(header) > 0 {
-		for key, value := range header {
+	if len(headers) > 0 {
+		for key, value := range headers[0] {
 			w.Header()[key] = value
 		}
 	}
@@ -58,13 +52,11 @@ func (app *Config) writeJSON(w http.ResponseWriter, status int, data any, header
 	return nil
 }
 
-func (app *Config) errorJSON(w http.ResponseWriter, err error, status int) error {
-	var statusCode int
+func (app *Config) errorJSON(w http.ResponseWriter, err error, status ...int) error {
+	statusCode := http.StatusBadRequest
 
-	if status == 0 {
-		statusCode = http.StatusBadRequest
-	} else {
-		statusCode = status
+	if len(status) > 0 {
+		statusCode = status[0]
 	}
 
 	payload := JSONResponse{
@@ -72,5 +64,7 @@ func (app *Config) errorJSON(w http.ResponseWriter, err error, status int) error
 		Message: err.Error(),
 	}
 
-	return app.writeJSON(w, statusCode, payload, nil)
+	log.Println(err)
+
+	return app.writeJSON(w, statusCode, payload)
 }

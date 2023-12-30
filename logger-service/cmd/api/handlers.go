@@ -15,7 +15,7 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	var requestPayload JSONPayload
 	err := app.readJSON(w, r, &requestPayload)
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -26,7 +26,7 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 
 	err = app.Models.LogEntry.Insert(event)
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -35,5 +35,5 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 		Message: "logged",
 	}
 
-	app.writeJSON(w, http.StatusAccepted, resp, nil)
+	app.writeJSON(w, http.StatusAccepted, resp)
 }

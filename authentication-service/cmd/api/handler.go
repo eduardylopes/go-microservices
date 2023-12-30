@@ -30,12 +30,12 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 	requestPayload := RequestPayload{}
 
 	if err := app.readJSON(w, r, &requestPayload); err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
 	if err := requestPayload.Validate(); err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -55,7 +55,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	err = app.logRequest(fullName, fmt.Sprintf("%s logged in", user.Email))
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 		Data:    user,
 	}
 
-	app.writeJSON(w, http.StatusAccepted, payload, nil)
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 func (app *Config) logRequest(name, data string) error {
