@@ -2,6 +2,8 @@ FROM alpine:latest
 
 RUN mkdir /app
 
-COPY /bin/brokerApp /app
+WORKDIR /app
 
-CMD ["/app/brokerApp"]
+COPY bin/brokerApp .
+
+CMD ["./brokerApp"]
