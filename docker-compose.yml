@@ -6,7 +6,7 @@ services:
       context: ./broker-service
     restart: always
     ports:
-      - "8080:80"
+      - '8080:80'
     deploy:
       mode: replicated
       replicas: 1
@@ -24,17 +24,34 @@ services:
       context: ./authentication-service
     restart: always
     ports:
-      - "8081:80"
+      - '8081:80'
     deploy:
       mode: replicated
       replicas: 1
     environment:
-      DSN: "host=postgres port=5432 user=postgres password=password dbname=users timezone=UTC connect_timeout=5"
+      DSN: 'host=postgres port=5432 user=postgres password=password dbname=users timezone=UTC connect_timeout=5'
+
+  mailer-service:
+    build:
+      context: ./mailer-service
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      MAIL_DOMAIN: localhost
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_ENCRYPTION: none
+      MAIL_USERNAME: ''
+      MAIL_PASSWORD: ''
+      FROM_NAME: 'Eduardy Lopes'
+      FROM_ADDRESS: eduardylopes@example.com
 
   postgres:
-    image: "postgres:14.2"
+    image: 'postgres:14.2'
     ports:
-      - "5432:5432"
+      - '5432:5432'
     restart: always
     deploy:
       mode: replicated
@@ -49,7 +66,7 @@ services:
   mongo:
     image: 'mongo'
     ports:
-      - "27017:27017"
+      - '27017:27017'
     deploy:
       mode: replicated
       replicas: 1
@@ -73,3 +90,9 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: password
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: password
+
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - '1025:1025'
+      - '8025:8025'
