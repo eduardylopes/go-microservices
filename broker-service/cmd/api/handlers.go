@@ -11,6 +11,7 @@ type RequestPayload struct {
 	Action string      `json:"action"`
 	Auth   AuthPayload `json:"auth,omitempty"`
 	Log    LogPayload  `json:"log,omitempty"`
+	Mail   MailPayload `json:"mail,omitempty"`
 }
 
 type AuthPayload struct {
@@ -23,20 +24,28 @@ type LogPayload struct {
 	Data string `json:"data"`
 }
 
+type MailPayload struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
+}
+
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	payload := JSONResponse{
 		Error:   false,
 		Message: "Hit the broker",
 	}
 
-	_ = app.writeJSON(w, http.StatusOK, payload, nil)
+	app.writeJSON(w, http.StatusOK, payload)
 }
 
 func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	requestPayload := RequestPayload{}
 
-	if err := app.readJSON(w, r, &requestPayload); err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+	err := app.readJSON(w, r, &requestPayload)
+	if err != nil {
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -45,8 +54,10 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.authenticate(w, requestPayload.Auth)
 	case "log":
 		app.logItem(w, requestPayload.Log)
+	case "mail":
+		app.sendMail(w, requestPayload.Mail)
 	default:
-		app.errorJSON(w, errors.New("unknown action"), http.StatusBadRequest)
+		app.errorJSON(w, errors.New("unknown action"))
 	}
 }
 
@@ -55,14 +66,14 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 
 	request, err := http.NewRequest("POST", "http://authentication-service/authenticate", bytes.NewBuffer(JSONData))
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
 	client := &http.Client{}
 	response, err := client.Do(request)
 	if err != nil {
-		app.errorJSON(w, err, http.StatusUnauthorized)
+		app.errorJSON(w, err)
 		return
 	}
 	defer response.Body.Close()
@@ -78,7 +89,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 	JSONFromService := JSONResponse{}
 
 	if err := json.NewDecoder(response.Body).Decode(&JSONFromService); err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -93,7 +104,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayload) {
 		Data:    JSONFromService.Data,
 	}
 
-	app.writeJSON(w, http.StatusAccepted, payload, nil)
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
 
 func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
@@ -103,7 +114,7 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 
 	req, err := http.NewRequest("POST", logServiceURL, bytes.NewBuffer(JSONData))
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -111,13 +122,13 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusAccepted {
-		app.errorJSON(w, err, http.StatusBadRequest)
+		app.errorJSON(w, err)
 		return
 	}
 
@@ -126,5 +137,39 @@ func (app *Config) logItem(w http.ResponseWriter, entry LogPayload) {
 		Message: "logged",
 	}
 
-	app.writeJSON(w, http.StatusAccepted, payload, nil)
+	app.writeJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) sendMail(w http.ResponseWriter, msg MailPayload) {
+	JSONData, _ := json.MarshalIndent(msg, "", "\t")
+
+	mailerServiceURL := "http://mailer-service/send"
+
+	req, err := http.NewRequest("POST", mailerServiceURL, bytes.NewBuffer(JSONData))
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("failed to send mail"))
+		return
+	}
+
+	payload := JSONResponse{
+		Error:   false,
+		Message: "Message sent to " + msg.To,
+	}
+
+	app.writeJSON(w, http.StatusAccepted, payload)
 }
