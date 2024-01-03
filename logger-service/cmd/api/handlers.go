@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/eduardylopes/go-microservices/logger-service/data"
 )
@@ -20,8 +21,9 @@ func (app *Config) WriteLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	event := data.LogEntry{
-		Name: requestPayload.Name,
-		Data: requestPayload.Data,
+		Name:      requestPayload.Name,
+		Data:      requestPayload.Data,
+		CreatedAt: time.Now(),
 	}
 
 	err = app.Models.LogEntry.Insert(event)
