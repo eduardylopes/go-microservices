@@ -21,6 +21,18 @@
       <a id="logBtn" class="btn btn-outline-success" href="javascript:void(0)"
         >Test Log
       </a>
+      <a
+        id="logRPCBtn"
+        class="btn btn-outline-success"
+        href="javascript:void(0)"
+        >Test RPC Log
+      </a>
+      <a
+        id="logGRPCBtn"
+        class="btn btn-outline-success"
+        href="javascript:void(0)"
+        >Test gRPC Log
+      </a>
       <a id="mailBtn" class="btn btn-outline-success" href="javascript:void(0)"
         >Test Mail
       </a>
@@ -64,6 +76,8 @@
   let brokerBtn = document.getElementById('brokerBtn');
   let authBrokerBtn = document.getElementById('authBrokerBtn');
   let logBtn = document.getElementById('logBtn');
+  let logRPCBtn = document.getElementById('logRPCBtn');
+  let logGRPCBtn = document.getElementById('logGRPCBtn');
   let mailBtn = document.getElementById('mailBtn');
   let output = document.getElementById('output');
   let sent = document.getElementById('sent');
@@ -150,6 +164,80 @@
     sent.innerHTML = JSON.stringify(payload, null, 2);
 
     fetch('http://localhost:8080/handle', body)
+      .then(response => response.json())
+      .then(data => {
+        received.innerHTML = JSON.stringify(data, null, 2);
+
+        if (data.error) {
+          output.innerHTML += `<br><strong>Error:</strong>: ${data.message}`;
+        } else {
+          output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+        }
+      })
+      .catch(error => {
+        output.innerHTML += `<br><br>Error: ${error}`;
+      })
+      .finally(() => (output.scrollTop = output.scrollHeight));
+  });
+
+  logRPCBtn.addEventListener('click', () => {
+    const payload = {
+      action: 'log',
+      log: {
+        name: 'event',
+        data: 'Some kind of data',
+      },
+    };
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const body = {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers,
+    };
+
+    sent.innerHTML = JSON.stringify(payload, null, 2);
+
+    fetch('http://localhost:8080/log-rpc', body)
+      .then(response => response.json())
+      .then(data => {
+        received.innerHTML = JSON.stringify(data, null, 2);
+
+        if (data.error) {
+          output.innerHTML += `<br><strong>Error:</strong>: ${data.message}`;
+        } else {
+          output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+        }
+      })
+      .catch(error => {
+        output.innerHTML += `<br><br>Error: ${error}`;
+      })
+      .finally(() => (output.scrollTop = output.scrollHeight));
+  });
+
+  logGRPCBtn.addEventListener('click', () => {
+    const payload = {
+      action: 'log',
+      log: {
+        name: 'event',
+        data: 'Some kind of data',
+      },
+    };
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const body = {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers,
+    };
+
+    sent.innerHTML = JSON.stringify(payload, null, 2);
+
+    fetch('http://localhost:8080/log-grpc', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);
