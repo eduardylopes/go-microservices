@@ -54,8 +54,9 @@ func main() {
 	}
 	go app.rpcListen()
 
-	log.Println("starting service on port", webPort)
+	go app.gRPCListen()
 
+	log.Println("starting service on port", webPort)
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
