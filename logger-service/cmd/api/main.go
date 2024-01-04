@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"os"
 	"time"
 
 	"github.com/eduardylopes/go-microservices/logger-service/data"
@@ -17,7 +18,6 @@ import (
 const (
 	webPort  = "80"
 	rpcPort  = "5001"
-	mongoURL = "mongodb://mongo:27017"
 	gRpcPort = "50001"
 )
 
@@ -87,17 +87,29 @@ func (app *Config) rpcListen() error {
 }
 
 func connectToMongo() (*mongo.Client, error) {
-	clientOptions := options.Client().ApplyURI(mongoURL)
-	clientOptions.SetAuth(options.Credential{
-		Username: "admin",
-		Password: "password",
-	})
+	mongoURI := os.Getenv("MONGO_URI")
+	if mongoURI == "" {
+		log.Panic("environment variable 'MONGO_URI' must be provided")
+	}
 
-	c, err := mongo.Connect(context.TODO(), clientOptions)
+	clientOptions := options.Client().ApplyURI(mongoURI)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*10))
+	defer cancel()
+
+	c, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Println("error connecting:", err)
+		c.Disconnect(ctx)
 		return nil, err
 	}
 
+	err = c.Ping(ctx, nil)
+	if err != nil {
+		log.Println("error pinging mongodb:", err)
+		c.Disconnect(ctx)
+		return nil, err
+	}
+
+	log.Println("connected to mongodb database")
 	return c, nil
 }

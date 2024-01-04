@@ -62,10 +62,13 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func connectToDB() *sql.DB {
-	dsn := os.Getenv("DSN")
+	postgresURI := os.Getenv("POSTGRES_URI")
+	if postgresURI == "" {
+		log.Panic("environment variable 'POSTGRES_URI' must be provided")
+	}
 
 	for {
-		connection, err := openDB(dsn)
+		connection, err := openDB(postgresURI)
 		if err != nil {
 			log.Println("Postgres not yet ready...")
 			counts++

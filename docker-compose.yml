@@ -18,6 +18,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      MONGO_URI: 'mongodb://admin:password@mongo:27017'
 
   authentication-service:
     build:
@@ -29,7 +31,7 @@ services:
       mode: replicated
       replicas: 1
     environment:
-      DSN: 'host=postgres port=5432 user=postgres password=password dbname=users timezone=UTC connect_timeout=5'
+      POSTGRES_URI: 'postgres://postgres:password@postgres/users?sslmode=disable&timezone=UTC&connect_timeout=5'
 
   mailer-service:
     build:

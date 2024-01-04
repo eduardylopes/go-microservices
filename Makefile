@@ -19,6 +19,9 @@ up_build: build_broker build_auth build_logger build_mailer build_listener
 	docker compose up --build -d
 	@echo "Docker images built and started!"
 
+## build: build all binaries
+build: build_broker build_auth build_logger build_mailer build_listener
+
 ## down: stop docker compose
 down:
 	@echo "Stopping docker compose..."
@@ -84,3 +87,10 @@ migratedown:
 ## migratecreate: creates migrations files up and down
 migratecreate:
 	migrate create -ext sql -dir ./authentication-service/db/migration -seq $(name).sql
+
+upload_images:
+	cd ./authentication-service && docker build -t eduardylopes/authentication-service:1.0.0 . && docker push eduardylopes/authentication-service:1.0.0
+	cd ./broker-service && docker build -t eduardylopes/broker-service:1.0.0 . && docker push eduardylopes/broker-service:1.0.0
+	cd ./listener-service && docker build -t eduardylopes/listener-service:1.0.0 . && docker push eduardylopes/listener-service:1.0.0
+	cd ./logger-service && docker build -t eduardylopes/logger-service:1.0.0 . && docker push eduardylopes/logger-service:1.0.0
+	cd ./mailer-service && docker build -t eduardylopes/mailer-service:1.0.0 . && docker push eduardylopes/mailer-service:1.0.0
