@@ -89,7 +89,7 @@
     };
 
     sent.innerHTML = 'empty post request';
-    fetch('http:\/\/localhost:8080', body)
+    fetch('{{ .BrokerURL }}', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);
@@ -126,7 +126,7 @@
 
     sent.innerHTML = JSON.stringify(payload, null, 2);
 
-    fetch('http:\/\/localhost:8080/handle', body)
+    fetch('{{ .BrokerURL}}' + '/handle', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);
@@ -163,7 +163,7 @@
 
     sent.innerHTML = JSON.stringify(payload, null, 2);
 
-    fetch('http://localhost:8080/handle', body)
+    fetch('{{ .BrokerURL}}' + '/handle', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);
@@ -200,7 +200,7 @@
 
     sent.innerHTML = JSON.stringify(payload, null, 2);
 
-    fetch('http://localhost:8080/log-rpc', body)
+    fetch('{{ .BrokerURL}}' + '/log-rpc', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);
@@ -237,7 +237,7 @@
 
     sent.innerHTML = JSON.stringify(payload, null, 2);
 
-    fetch('http://localhost:8080/log-grpc', body)
+    fetch('{{ .BrokerURL}}' + '/log-grpc', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);
@@ -276,7 +276,7 @@
 
     sent.innerHTML = JSON.stringify(payload, null, 2);
 
-    fetch('http://localhost:8080/handle', body)
+    fetch('{{ .BrokerURL}}' + '/handle', body)
       .then(response => response.json())
       .then(data => {
         received.innerHTML = JSON.stringify(data, null, 2);

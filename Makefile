@@ -12,7 +12,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_broker build_auth build_logger build_mailer build_listener
+up_build: build_broker build_auth build_logger build_mailer build_listener build_front
 	@echo "Stopping docker images (if running...)"
 	docker compose down
 	@echo "Building (when required) and starting docker images..."
@@ -20,7 +20,7 @@ up_build: build_broker build_auth build_logger build_mailer build_listener
 	@echo "Docker images built and started!"
 
 ## build: build all binaries
-build: build_broker build_auth build_logger build_mailer build_listener
+build: build_broker build_auth build_logger build_mailer build_listener build_front
 
 ## down: stop docker compose
 down:

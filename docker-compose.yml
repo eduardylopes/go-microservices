@@ -33,6 +33,18 @@ services:
     environment:
       POSTGRES_URI: 'postgres://postgres:password@postgres/users?sslmode=disable&timezone=UTC&connect_timeout=5'
 
+  front-end:
+    build:
+      context: ./front-end
+    restart: always
+    ports:
+      - '3000:3000'
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      BROKER_URL: 'http://localhost:8080'
+
   mailer-service:
     build:
       context: ./mailer-service
