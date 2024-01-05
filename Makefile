@@ -75,7 +75,6 @@ stop:
 	@-pkill -SIGTERM -f "./${FRONT_END_BINARY}"
 	@echo "Stopped front end!"
 
-
 ## migrateup: runs all the migrations
 migrateup:
 	migrate -path ./authentication-service/db/migration -database "postgresql://postgres:password@localhost:5432/users?sslmode=disable" -verbose up
@@ -88,9 +87,11 @@ migratedown:
 migratecreate:
 	migrate create -ext sql -dir ./authentication-service/db/migration -seq $(name).sql
 
+## upload_images: upload images to the docker
 upload_images:
 	cd ./authentication-service && docker build -t eduardylopes/authentication-service:1.0.0 . && docker push eduardylopes/authentication-service:1.0.0
 	cd ./broker-service && docker build -t eduardylopes/broker-service:1.0.0 . && docker push eduardylopes/broker-service:1.0.0
 	cd ./listener-service && docker build -t eduardylopes/listener-service:1.0.0 . && docker push eduardylopes/listener-service:1.0.0
 	cd ./logger-service && docker build -t eduardylopes/logger-service:1.0.0 . && docker push eduardylopes/logger-service:1.0.0
 	cd ./mailer-service && docker build -t eduardylopes/mailer-service:1.0.0 . && docker push eduardylopes/mailer-service:1.0.0
+	cd ./front-end && docker build -t eduardylopes/front-end:1.0.0 . && docker push eduardylopes/front-end:1.0.0
