@@ -1,3 +1,4 @@
+MICROSERVICES:=authentication-service broker-service listener-service logger-service mailer-service front-end
 FRONT_END_BINARY=frontApp
 BROKER_BINARY=brokerApp
 AUTH_BINARY=authApp
@@ -86,3 +87,12 @@ migratedown:
 ## migratecreate: creates migrations files up and down
 migratecreate:
 	migrate create -ext sql -dir ./authentication-service/db/migration -seq $(name).sql
+
+## upload_images: upload images to the docker
+install_dependencies:
+	cd ./authentication-service && go mod tidy
+	cd ./broker-service && go mod tidy
+	cd ./listener-service && go mod tidy
+	cd ./logger-service && go mod tidy
+	cd ./mailer-service && go mod tidy
+	cd ./front-end && go mod tidy
