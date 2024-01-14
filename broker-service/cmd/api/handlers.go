@@ -259,7 +259,7 @@ func (app *Config) logItemViaGRPC(w http.ResponseWriter, r *http.Request) {
 
 	payload := JSONResponse{
 		Error:   false,
-		Message: "logged",
+		Message: "logged via gRPC",
 	}
 
 	app.writeJSON(w, http.StatusAccepted, payload)
